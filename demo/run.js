@@ -1,10 +1,12 @@
 import center from 'src/transforms/center';
 import climb from 'src/transforms/climb';
 import lean from 'src/transforms/lean';
+import pinch from 'src/transforms/pinch';
 import rotate from 'src/transforms/rotate';
 import scale from 'src/transforms/scale';
 import starwars from 'src/transforms/starwars';
 import translate from 'src/transforms/translate';
+import wave from 'src/transforms/wave';
 
 import fromSvg from 'src/fromSvg';
 import collect from 'src/collect';
@@ -20,7 +22,7 @@ let loopdeloop = (action) => {
     action(t);
     requestAnimationFrame(theLooper);
   };
-  theLooper();
+  theLooper(0);
 };
 
 let fadeOut = (ctx) => {
@@ -29,7 +31,7 @@ let fadeOut = (ctx) => {
       height = canvas.height;
   ctx.save();
   ctx.globalCompositeOperation = 'destination-out';
-  ctx.globalAlpha = 0.1;
+  ctx.globalAlpha = 0.9;
   ctx.fillStyle = '#fff';
   ctx.fillRect(
     -width / 2,
@@ -48,17 +50,20 @@ let rainbow = (function * () {
 
 let paths = fromSvg(document.getElementsByTagName('svg')[0], 1000),
     ctx = document.getElementsByTagName('canvas')[0].getContext('2d');
-
 ctx.translate(250, 250);
 
 loopdeloop((t) => {
-  let transformations = [
-    center(),
-    scale(Math.sin(t / 88), Math.sin(t / 147) * -1),
-    starwars(Math.sin(t / 200) * 20),
-    scale(1, -1),
-    rotate(Math.sin(t / 500) * 360)
-  ];
+  let u = Math.cos(t / 1000),
+      transformations = [
+        center(),
+        pinch(0, 0, Math.sin(u * 3)),
+        // scale(Math.sin(t / 88), Math.sin(t / 147) * -1),
+        // scale(1, -1),
+        // starwars(Math.sin(u) * 70),
+        // scale(1, -1),
+        // rotate(Math.sin(u) * 360)
+        wave(Math.sin(t / 1000) * 50 + 50, 10, t / 1000)
+      ];
 
   fadeOut(ctx);
   ctx.strokeStyle = rainbow.next().value;

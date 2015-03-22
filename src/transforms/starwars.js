@@ -7,11 +7,14 @@ export default (leanback) => {
     let points = collect(stream),
         box = boundingBoxOf(points),
         k = box.height * Math.tan(toRadians(90 - leanback));
-    for(var i = 0; i < points.length; i++) {
-      yield {
-        x: k * points[i].x / (k + points[i].y),
-        y: k * points[i].y / (k + points[i].y)
-      };
+    for(let aPoint of points) {
+      if(aPoint.y == 0 || (aPoint.y == 0 && k == 0)) {
+        yield aPoint;
+      } else
+        yield {
+          x: k * aPoint.x / (k + aPoint.y),
+          y: k * aPoint.y / (k + aPoint.y)
+        };
     }
   };
 };
