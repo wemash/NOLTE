@@ -31,7 +31,7 @@ let fadeOut = (ctx) => {
       height = canvas.height;
   ctx.save();
   ctx.globalCompositeOperation = 'destination-out';
-  ctx.globalAlpha = 0.9;
+  ctx.globalAlpha = 0.01;
   ctx.fillStyle = '#fff';
   ctx.fillRect(
     -width / 2,
@@ -49,20 +49,38 @@ let rainbow = (function * () {
 })();
 
 let paths = fromSvg(document.getElementsByTagName('svg')[0], 1000),
-    ctx = document.getElementsByTagName('canvas')[0].getContext('2d');
-ctx.translate(250, 250);
+    canvas = document.getElementsByTagName('canvas')[0],
+    ctx = canvas.getContext('2d');
+
+let doResize = () => {
+  let width = document.body.clientWidth,
+      height = document.body.clientHeight;
+  canvas.width = width;
+  canvas.height = height;
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.translate(width / 2, height / 2);
+};
+
+doResize();
+window.onresize = doResize;
 
 loopdeloop((t) => {
   let u = Math.cos(t / 1000),
+      r = Math.sin(t / 1000) * 90,
       transformations = [
         center(),
-        pinch(0, 0, Math.sin(u * 3)),
+        // pinch(Math.sin(t / 200) * 50, 0, Math.sin(u * 3)),
         // scale(Math.sin(t / 88), Math.sin(t / 147) * -1),
         // scale(1, -1),
         // starwars(Math.sin(u) * 70),
         // scale(1, -1),
-        // rotate(Math.sin(u) * 360)
-        wave(Math.sin(t / 1000) * 50 + 50, 10, t / 1000)
+        translate(0, Math.sin(t / 100) * 250),
+        translate(Math.sin(u / 2) * 1000, Math.sin(t / 500) * 10 - 5),
+        // rotate(Math.sin(u / 5) * 360),
+        lean(Math.sin(t / 500)),
+        // rotate(r),
+        wave(Math.sin(t / 1000) * 3, 10, t / 500),
+        // rotate(r * -1)
       ];
 
   fadeOut(ctx);
